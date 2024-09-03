@@ -9,19 +9,14 @@ public class GameController : MonoBehaviour
     private Sprite bgImage;
 
     public Sprite[] puzzles;
-
     public List<Sprite> gamePuzzles = new List<Sprite>();
-
     public List<Button> btns = new List<Button>();
 
     private bool firstGuess, secondGuess;
-
     private int countGuesses;
     private int countCorrectGuesses;
     private int gameGuesses;
-
     private int firstGuessIndex, secondGuessIndex;
-
     private string firstGuessPuzzle, secondGuessPuzzle;
 
     void Awake()
@@ -45,7 +40,7 @@ public class GameController : MonoBehaviour
         for (int i = 0; i < objects.Length; i++)
         {
             btns.Add(objects[i].GetComponent<Button>());
-            btns[i].image.sprite = bgImage;
+            btns[i].GetComponent<Image>().sprite = bgImage;
         }
     }
 
@@ -85,7 +80,7 @@ public class GameController : MonoBehaviour
 
             firstGuessPuzzle = gamePuzzles[firstGuessIndex].name;
 
-            btns[firstGuessIndex].image.sprite = gamePuzzles[firstGuessIndex];
+            StartCoroutine(FlipAnimation(btns[firstGuessIndex].transform, gamePuzzles[firstGuessIndex]));
 
         }
         else if (!secondGuess)
@@ -96,13 +91,55 @@ public class GameController : MonoBehaviour
 
             secondGuessPuzzle = gamePuzzles[secondGuessIndex].name;
 
-            btns[secondGuessIndex].image.sprite = gamePuzzles[secondGuessIndex];
-
-            // Increment the guess counter here
-            countGuesses++;
-
-            StartCoroutine(CheckIfThePuzzlesMatch());
+            StartCoroutine(FlipAnimation(btns[secondGuessIndex].transform, gamePuzzles[secondGuessIndex], () =>
+            {
+                // Increment the guess counter
+                countGuesses++;
+                StartCoroutine(CheckIfThePuzzlesMatch());
+            }));
         }
+    }
+
+    IEnumerator FlipAnimation(Transform cardTransform, Sprite newSprite, System.Action onComplete = null)
+    {
+        RectTransform rectTransform = cardTransform.GetComponent<RectTransform>();
+        Vector3 originalRotation = rectTransform.localEulerAngles;
+        Vector3 flippedRotation = new Vector3(0, 90, 0); // Flip along Y axis
+
+        float duration = 0.5f;
+        float elapsedTime = 0f;
+
+        // Animate flip
+        while (elapsedTime < duration)
+        {
+            float t = elapsedTime / duration;
+            rectTransform.localEulerAngles = Vector3.Lerp(originalRotation, flippedRotation, t);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        rectTransform.localEulerAngles = flippedRotation;
+
+   
+        cardTransform.GetComponentInChildren<Image>().sprite = newSprite;
+
+        
+        //yield return new WaitForSeconds(0.1f);
+
+        // Flip back to original state
+        elapsedTime = 0f;
+        while (elapsedTime < duration)
+        {
+            float t = elapsedTime / duration;
+            rectTransform.localEulerAngles = Vector3.Lerp(flippedRotation, originalRotation, t);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        rectTransform.localEulerAngles = originalRotation;
+
+        // Execute the callback action
+        onComplete?.Invoke();
     }
 
     IEnumerator CheckIfThePuzzlesMatch()
