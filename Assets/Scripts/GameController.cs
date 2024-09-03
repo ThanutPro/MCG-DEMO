@@ -81,23 +81,28 @@ public class GameController : MonoBehaviour
         // Play button press sound
         buttonPressSFX.Play();
 
+        int selectedButtonIndex = int.Parse(UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.name);
+
         if (!firstGuess)
         {
             firstGuess = true;
 
-            firstGuessIndex = int.Parse(UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.name);
-
+            firstGuessIndex = selectedButtonIndex;
             firstGuessPuzzle = gamePuzzles[firstGuessIndex].name;
 
             StartCoroutine(FlipAnimation(btns[firstGuessIndex].transform, gamePuzzles[firstGuessIndex]));
-
         }
         else if (!secondGuess)
         {
+            // Ensure the second guess is not the same button as the first guess
+            if (selectedButtonIndex == firstGuessIndex)
+            {
+                return; // Do nothing if the player clicks the same button
+            }
+
             secondGuess = true;
 
-            secondGuessIndex = int.Parse(UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.name);
-
+            secondGuessIndex = selectedButtonIndex;
             secondGuessPuzzle = gamePuzzles[secondGuessIndex].name;
 
             StartCoroutine(FlipAnimation(btns[secondGuessIndex].transform, gamePuzzles[secondGuessIndex], () =>
