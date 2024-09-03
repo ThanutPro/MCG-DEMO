@@ -537,4 +537,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bgImage: {fileID: 21300000, guid: c190158753a94834fac863e846ebf855, type: 3}
+  puzzles: []
+  gamePuzzles: []
   btns: []
