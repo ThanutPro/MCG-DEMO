@@ -106,7 +106,7 @@ public class GameController : MonoBehaviour
         Vector3 originalRotation = rectTransform.localEulerAngles;
         Vector3 flippedRotation = new Vector3(0, 90, 0); // Flip along Y axis
 
-        float duration = 0.5f;
+        float duration = 0.2f;
         float elapsedTime = 0f;
 
         // Animate flip
@@ -144,7 +144,7 @@ public class GameController : MonoBehaviour
 
     IEnumerator CheckIfThePuzzlesMatch()
     {
-        yield return new WaitForSeconds(1f);
+        //yield return new WaitForSeconds(1f);
 
         if (firstGuessPuzzle == secondGuessPuzzle)
         {
