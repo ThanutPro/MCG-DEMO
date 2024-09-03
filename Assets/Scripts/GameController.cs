@@ -12,6 +12,12 @@ public class GameController : MonoBehaviour
     public List<Sprite> gamePuzzles = new List<Sprite>();
     public List<Button> btns = new List<Button>();
 
+    [Header("Sound Effects")]
+    public AudioSource buttonPressSFX;
+    public AudioSource correctAnswerSFX;
+    public AudioSource wrongAnswerSFX;
+    public AudioSource gameEndSFX;
+
     private bool firstGuess, secondGuess;
     private int countGuesses;
     private int countCorrectGuesses;
@@ -72,6 +78,9 @@ public class GameController : MonoBehaviour
 
     public void PickAPuzzle()
     {
+        // Play button press sound
+        buttonPressSFX.Play();
+
         if (!firstGuess)
         {
             firstGuess = true;
@@ -120,13 +129,8 @@ public class GameController : MonoBehaviour
 
         rectTransform.localEulerAngles = flippedRotation;
 
-   
         cardTransform.GetComponentInChildren<Image>().sprite = newSprite;
 
-        
-        //yield return new WaitForSeconds(0.1f);
-
-        // Flip back to original state
         elapsedTime = 0f;
         while (elapsedTime < duration)
         {
@@ -144,11 +148,12 @@ public class GameController : MonoBehaviour
 
     IEnumerator CheckIfThePuzzlesMatch()
     {
-        //yield return new WaitForSeconds(1f);
-
         if (firstGuessPuzzle == secondGuessPuzzle)
         {
             yield return new WaitForSeconds(.5f);
+
+            // Play correct answer sound
+            correctAnswerSFX.Play();
 
             btns[firstGuessIndex].interactable = false;
             btns[secondGuessIndex].interactable = false;
@@ -161,6 +166,9 @@ public class GameController : MonoBehaviour
         else
         {
             yield return new WaitForSeconds(.5f);
+
+            // Play wrong answer sound
+            wrongAnswerSFX.Play();
 
             btns[firstGuessIndex].image.sprite = bgImage;
             btns[secondGuessIndex].image.sprite = bgImage;
@@ -177,6 +185,9 @@ public class GameController : MonoBehaviour
 
         if (countCorrectGuesses == gameGuesses)
         {
+            // Play game end sound
+            gameEndSFX.Play();
+
             Debug.Log("Game Finished");
             Debug.Log("It took you " + countGuesses + " guesses to finish the game");
         }
