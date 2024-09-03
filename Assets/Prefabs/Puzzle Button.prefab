@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7964537323409470022}
   m_Layer: 5
   m_Name: Puzzle Button
-  m_TagString: Untagged
+  m_TagString: Puzzle Button
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
