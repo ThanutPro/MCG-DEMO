@@ -155,7 +155,7 @@ public class GameController : MonoBehaviour
     {
         if (firstGuessPuzzle == secondGuessPuzzle)
         {
-            yield return new WaitForSeconds(.5f);
+            yield return new WaitForSeconds(.25f);
 
             // Play correct answer sound
             correctAnswerSFX.Play();
@@ -170,7 +170,7 @@ public class GameController : MonoBehaviour
         }
         else
         {
-            yield return new WaitForSeconds(.5f);
+            yield return new WaitForSeconds(.25f);
 
             // Play wrong answer sound
             wrongAnswerSFX.Play();
@@ -179,7 +179,7 @@ public class GameController : MonoBehaviour
             btns[secondGuessIndex].image.sprite = bgImage;
         }
 
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(.25f);
 
         firstGuess = secondGuess = false;
     }
