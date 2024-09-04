@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UI; // For Button and Image
+using TMPro; // For TextMeshProUGUI
 
 public class GameController : MonoBehaviour
 {
@@ -18,12 +19,18 @@ public class GameController : MonoBehaviour
     public AudioSource wrongAnswerSFX;
     public AudioSource gameEndSFX;
 
+    [Header("Score")]
+    public TextMeshProUGUI turnsText; // Use TextMeshProUGUI
+    public TextMeshProUGUI matchesText; // Use TextMeshProUGUI
+
     private bool firstGuess, secondGuess;
     private int countGuesses;
     private int countCorrectGuesses;
     private int gameGuesses;
     private int firstGuessIndex, secondGuessIndex;
     private string firstGuessPuzzle, secondGuessPuzzle;
+    private int turns; // Number of turns taken
+    private int matches; // Number of matches found
 
     void Awake()
     {
@@ -37,6 +44,9 @@ public class GameController : MonoBehaviour
         AddGamePuzzles();
         Shuffle(gamePuzzles);
         gameGuesses = gamePuzzles.Count / 2;
+        turns = 0;
+        matches = 0;
+        UpdateScoreUI();
     }
 
     void GetButtons()
@@ -63,7 +73,6 @@ public class GameController : MonoBehaviour
             }
 
             gamePuzzles.Add(puzzles[index]);
-
             index++;
         }
     }
@@ -108,7 +117,8 @@ public class GameController : MonoBehaviour
             StartCoroutine(FlipAnimation(btns[secondGuessIndex].transform, gamePuzzles[secondGuessIndex], () =>
             {
                 // Increment the guess counter
-                countGuesses++;
+                turns++; // Increment turns if second guess is made
+                UpdateScoreUI(); // Update UI to reflect new turns count
                 StartCoroutine(CheckIfThePuzzlesMatch());
             }));
         }
@@ -166,6 +176,9 @@ public class GameController : MonoBehaviour
             btns[firstGuessIndex].image.color = new Color(0, 0, 0, 0);
             btns[secondGuessIndex].image.color = new Color(0, 0, 0, 0);
 
+            matches++; // Increment matches if the puzzles match
+            UpdateScoreUI(); // Update UI to reflect new matches count
+
             CheckIfTheGameIsFinished();
         }
         else
@@ -194,7 +207,7 @@ public class GameController : MonoBehaviour
             gameEndSFX.Play();
 
             Debug.Log("Game Finished");
-            Debug.Log("It took you " + countGuesses + " guesses to finish the game");
+            Debug.Log("It took you " + turns + " turns and " + matches + " matches to finish the game");
         }
     }
 
@@ -207,5 +220,14 @@ public class GameController : MonoBehaviour
             list[i] = list[randomIndex];
             list[randomIndex] = temp;
         }
+    }
+
+    void UpdateScoreUI()
+    {
+        if (turnsText != null)
+            turnsText.text = "" + turns;
+
+        if (matchesText != null)
+            matchesText.text = "" + matches;
     }
 }
