@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI; // For Button and Image
-using TMPro; // For TextMeshProUGUI
+using UnityEngine.UI;
+using TMPro;
 
 public class GameController : MonoBehaviour
 {
@@ -20,8 +20,9 @@ public class GameController : MonoBehaviour
     public AudioSource gameEndSFX;
 
     [Header("Score")]
-    public TextMeshProUGUI turnsText; // Use TextMeshProUGUI
-    public TextMeshProUGUI matchesText; // Use TextMeshProUGUI
+    public TextMeshProUGUI turnsText; 
+    public TextMeshProUGUI matchesText; 
+    public TextMeshProUGUI winMessageText; 
 
     private bool firstGuess, secondGuess;
     private int countGuesses;
@@ -29,8 +30,8 @@ public class GameController : MonoBehaviour
     private int gameGuesses;
     private int firstGuessIndex, secondGuessIndex;
     private string firstGuessPuzzle, secondGuessPuzzle;
-    private int turns; // Number of turns taken
-    private int matches; // Number of matches found
+    private int turns;
+    private int matches; 
 
     void Awake()
     {
@@ -47,6 +48,7 @@ public class GameController : MonoBehaviour
         turns = 0;
         matches = 0;
         UpdateScoreUI();
+        winMessageText.gameObject.SetActive(false); // Ensure win message is hidden at the start
     }
 
     void GetButtons()
@@ -208,6 +210,10 @@ public class GameController : MonoBehaviour
 
             Debug.Log("Game Finished");
             Debug.Log("It took you " + turns + " turns and " + matches + " matches to finish the game");
+
+            // Show win message
+            winMessageText.gameObject.SetActive(true);
+            winMessageText.text = "You win!";
         }
     }
 
